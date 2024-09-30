@@ -1,23 +1,25 @@
 import React from 'react';
-// import SHeader from './assets/styles/app.styles';
-// import { SHeader } from './assets/styles/app.styles';
-import { InputField, FilterField, Container } from './assets/styles/app.styles';
+import {GlobalStyle, InputField, FilterField, Container, SubmitButton, TodoInput, ListHeading } from './assets/styles/app.styles';
 
 function App() {
     return (
+
+        <>
+        <GlobalStyle/>
         <Container>
             <h1>ToDos</h1>
             <InputField>
-                <input type='text' placeholder='New todo...' />
-                <button>Add</button>
+                <TodoInput type='text' placeholder='New todo...'></TodoInput>
+                <SubmitButton>Add</SubmitButton>
             </InputField>
             <FilterField>
-
-                <button>Show All tasts</button>
-                <button>Show Active tasks</button>
-                <button>Show Completed tasks</button>
+                <SubmitButton>Show All tasts</SubmitButton>
+                <SubmitButton>Show Active tasks</SubmitButton>
+                <SubmitButton>Show Completed tasks</SubmitButton>
             </FilterField>
+            <ListHeading>tasks remaining</ListHeading>
         </Container>
+        </>
     );
 }
 
