@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { nanoid } from 'nanoid'
+import { nanoid } from 'nanoid';
 import {
     GlobalStyle,
     InputField,
@@ -8,11 +8,13 @@ import {
     SubmitButton,
     TodoInput,
     ListHeading,
+    TaskList,
+    Checkbox,
 } from './assets/styles/app.styles';
 
 function App() {
-    const [tasks, setTasks] = useState<string[]>([]);
-    const [value, setValue] = useState<string>(''); 
+    const [tasks, setTasks] = useState<{ id: string; content: string; checked: boolean }[]>([]);
+    const [value, setValue] = useState<string>('');
 
     function recording(event: React.ChangeEvent<HTMLInputElement>) {
         setValue(event.target.value);
@@ -20,16 +22,32 @@ function App() {
 
     function addTask() {
         if (value) {
-            setTasks([...tasks, value]); // Добавляем новое значение в массив задач
-            setValue(''); // Очищаем поле ввода
+            setTasks([...tasks, { id: nanoid(), content: value, checked: false }]);
+            setValue('');
         }
     }
 
-    let res = tasks.map((elem) => {
+    function toggleCheckbox(id: string) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, checked: !task.checked } : task
+        ));
+    }
+
+    function deleteCheckedTasks() {
+        setTasks(tasks.filter(task => !task.checked)); // Оставляем только те задачи, которые не отмечены
+    }
+
+    let res = tasks.map((task) => {
         return (
-            <div key={nanoid()}>
-                <input type="checkbox" />
-                <label>{elem}</label>
+            <div key={task.id}>
+                <Checkbox 
+                    type="checkbox" 
+                    checked={task.checked} 
+                    onChange={() => toggleCheckbox(task.id)} 
+                />
+                <label>{task.content}</label>
+                <SubmitButton>Edit</SubmitButton>
+                <SubmitButton onClick={deleteCheckedTasks}>Delete</SubmitButton> {/* Теперь удаляем все отмеченные задачи */}
             </div>
         );
     });
@@ -41,7 +59,7 @@ function App() {
                 <h1>ToDos</h1>
                 <InputField>
                     <TodoInput value={value} onChange={recording} type='text' placeholder='New todo...' />
-                    <SubmitButton onClick={addTask}>Add</SubmitButton> {/* При нажатии добавляем задачу */}
+                    <SubmitButton onClick={addTask}>Add</SubmitButton>
                 </InputField>
                 <FilterField>
                     <SubmitButton>Show All tasks</SubmitButton>
@@ -49,9 +67,7 @@ function App() {
                     <SubmitButton>Show Completed tasks</SubmitButton>
                 </FilterField>
                 <ListHeading>{tasks.length} Tasks remaining</ListHeading>
-                <div>
-                    {res} {/* Отображаем список задач */}
-                </div>
+                <TaskList>{res}</TaskList>
             </Container>
         </>
     );

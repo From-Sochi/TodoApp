@@ -71,3 +71,21 @@ export const ListHeading = styled.h2`
     font-weight: bold;
     unicode-bidi: isolate;
 `;
+
+export const TaskList = styled.div`
+    display: flex;
+    // align-items: center;
+    font-size: 1.6rem;
+    flex-direction: column;
+    align-content: left;
+`;
+
+export const Checkbox = styled.input.attrs({ type: 'checkbox' })`
+    background: none;
+    background-color: #50fa7b;
+    border-radius: 1rem;
+    height: 1.5rem;
+    width: 1.5rem;
+    margin: 1rem;
+    vertical-align: middle;
+`;
