@@ -13,7 +13,7 @@ import {
 } from './assets/styles/app.styles';
 
 function App() {
-    const [tasks, setTasks] = useState<{ id: string; content: string; checked: boolean }[]>([]);
+    const [tasks, setTasks] = useState<{ id: string; content: string; checked: boolean; isEditing: boolean; currentEditValue: string }[]>([]);
     const [value, setValue] = useState<string>('');
 
     function recording(event: React.ChangeEvent<HTMLInputElement>) {
@@ -22,7 +22,7 @@ function App() {
 
     function addTask() {
         if (value) {
-            setTasks([...tasks, { id: nanoid(), content: value, checked: false }]);
+            setTasks([...tasks, { id: nanoid(), content: value, checked: false, isEditing: false, currentEditValue: value }]);
             setValue('');
         }
     }
@@ -34,7 +34,31 @@ function App() {
     }
 
     function deleteTask(id: string) {
-        setTasks(tasks.filter(task => task.id !== id)); // Удаляем только конкретную задачу по id
+        setTasks(tasks.filter(task => task.id !== id));
+    }
+
+    function startEditing(id: string) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, isEditing: true, currentEditValue: task.content } : task
+        ));
+    }
+
+    function saveEdit(id: string) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, content: task.currentEditValue, isEditing: false } : task
+        ));
+    }
+
+    function cancelEdit(id: string) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, isEditing: false } : task
+        ));
+    }
+
+    function handleEditChange(id: string, value: string) {
+        setTasks(tasks.map(task => 
+            task.id === id ? { ...task, currentEditValue: value } : task
+        ));
     }
 
     let res = tasks.map((task) => {
@@ -45,9 +69,23 @@ function App() {
                     checked={task.checked} 
                     onChange={() => toggleCheckbox(task.id)} 
                 />
-                <label>{task.content}</label>
-                <SubmitButton>Edit</SubmitButton>
-                <SubmitButton onClick={() => deleteTask(task.id)} disabled={!task.checked}>Delete</SubmitButton> {/* Удаляет только отмеченную задачу */}
+                {task.isEditing ? (
+                    <div>
+                        <input 
+                            type="text" 
+                            value={task.currentEditValue} 
+                            onChange={(e) => handleEditChange(task.id, e.target.value)} 
+                        />
+                        <SubmitButton onClick={() => saveEdit(task.id)}>Save</SubmitButton>
+                        <SubmitButton onClick={() => cancelEdit(task.id)}>Cancel</SubmitButton>
+                    </div>
+                ) : (
+                    <div>
+                        <label>{task.content}</label>
+                        <SubmitButton onClick={() => startEditing(task.id)}>Edit</SubmitButton>
+                        <SubmitButton onClick={() => deleteTask(task.id)} disabled={!task.checked}>Delete</SubmitButton>
+                    </div>
+                )}
             </div>
         );
     });
