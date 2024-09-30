@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { nanoid } from 'nanoid';
+
 import {
     GlobalStyle,
     InputField,
@@ -10,11 +11,13 @@ import {
     ListHeading,
     TaskList,
     Checkbox,
+    Description,
 } from './assets/styles/app.styles';
 
 function App() {
     const [tasks, setTasks] = useState<{ id: string; content: string; checked: boolean; isEditing: boolean; currentEditValue: string }[]>([]);
     const [value, setValue] = useState<string>('');
+    const [filter, setFilter] = useState<'all' | 'active' | 'completed'>('all');
 
     function recording(event: React.ChangeEvent<HTMLInputElement>) {
         setValue(event.target.value);
@@ -61,33 +64,14 @@ function App() {
         ));
     }
 
-    let res = tasks.map((task) => {
-        return (
-            <div key={task.id}>
-                <Checkbox 
-                    type="checkbox" 
-                    checked={task.checked} 
-                    onChange={() => toggleCheckbox(task.id)} 
-                />
-                {task.isEditing ? (
-                    <div>
-                        <input 
-                            type="text" 
-                            value={task.currentEditValue} 
-                            onChange={(e) => handleEditChange(task.id, e.target.value)} 
-                        />
-                        <SubmitButton onClick={() => saveEdit(task.id)}>Save</SubmitButton>
-                        <SubmitButton onClick={() => cancelEdit(task.id)}>Cancel</SubmitButton>
-                    </div>
-                ) : (
-                    <div>
-                        <label>{task.content}</label>
-                        <SubmitButton onClick={() => startEditing(task.id)}>Edit</SubmitButton>
-                        <SubmitButton onClick={() => deleteTask(task.id)} disabled={!task.checked}>Delete</SubmitButton>
-                    </div>
-                )}
-            </div>
-        );
+    function changeFilter(newFilter: 'all' | 'active' | 'completed') {
+        setFilter(newFilter);
+    }
+
+    const filteredTasks = tasks.filter(task => {
+        if (filter === 'active') return !task.checked;
+        if (filter === 'completed') return task.checked;
+        return true; // для "all"
     });
 
     return (
@@ -100,12 +84,39 @@ function App() {
                     <SubmitButton onClick={addTask}>Add</SubmitButton>
                 </InputField>
                 <FilterField>
-                    <SubmitButton>Show All tasks</SubmitButton>
-                    <SubmitButton>Show Active tasks</SubmitButton>
-                    <SubmitButton>Show Completed tasks</SubmitButton>
+                    <SubmitButton onClick={() => changeFilter('all')}>Show All tasks</SubmitButton>
+                    <SubmitButton onClick={() => changeFilter('active')}>Show Active tasks</SubmitButton>
+                    <SubmitButton onClick={() => changeFilter('completed')}>Show Completed tasks</SubmitButton>
                 </FilterField>
-                <ListHeading>{tasks.length} Tasks remaining</ListHeading>
-                <TaskList>{res}</TaskList>
+                <ListHeading>{filteredTasks.length} Tasks remaining</ListHeading>
+                <TaskList>
+                    {filteredTasks.map((task) => (
+                        <Description key={task.id}>
+                            <Checkbox 
+                                type="checkbox" 
+                                checked={task.checked} 
+                                onChange={() => toggleCheckbox(task.id)} 
+                            />
+                            {task.isEditing ? (
+                                <Description>
+                                    <input 
+                                        type="text" 
+                                        value={task.currentEditValue} 
+                                        onChange={(e) => handleEditChange(task.id, e.target.value)} 
+                                    />
+                                    <SubmitButton onClick={() => saveEdit(task.id)}>Save</SubmitButton>
+                                    <SubmitButton onClick={() => cancelEdit(task.id)}>Cancel</SubmitButton>
+                                </Description>
+                            ) : (
+                                <Description>
+                                    <label>{task.content}</label>
+                                    <SubmitButton onClick={() => startEditing(task.id)}>Edit</SubmitButton>
+                                    <SubmitButton onClick={() => deleteTask(task.id)} disabled={!task.checked}>Delete</SubmitButton>
+                                </Description>
+                            )}
+                        </Description>
+                    ))}
+                </TaskList>
             </Container>
         </>
     );

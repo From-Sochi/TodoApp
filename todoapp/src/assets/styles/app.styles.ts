@@ -74,7 +74,6 @@ export const ListHeading = styled.h2`
 
 export const TaskList = styled.div`
     display: flex;
-    // align-items: center;
     font-size: 1.6rem;
     flex-direction: column;
     align-content: left;
@@ -89,3 +88,8 @@ export const Checkbox = styled.input.attrs({ type: 'checkbox' })`
     margin: 1rem;
     vertical-align: middle;
 `;
+
+export const Description = styled.div`
+display: flex;
+align-items: center;
+`
