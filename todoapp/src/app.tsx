@@ -33,8 +33,8 @@ function App() {
         ));
     }
 
-    function deleteCheckedTasks() {
-        setTasks(tasks.filter(task => !task.checked)); // Оставляем только те задачи, которые не отмечены
+    function deleteTask(id: string) {
+        setTasks(tasks.filter(task => task.id !== id)); // Удаляем только конкретную задачу по id
     }
 
     let res = tasks.map((task) => {
@@ -47,7 +47,7 @@ function App() {
                 />
                 <label>{task.content}</label>
                 <SubmitButton>Edit</SubmitButton>
-                <SubmitButton onClick={deleteCheckedTasks}>Delete</SubmitButton> {/* Теперь удаляем все отмеченные задачи */}
+                <SubmitButton onClick={() => deleteTask(task.id)} disabled={!task.checked}>Delete</SubmitButton> {/* Удаляет только отмеченную задачу */}
             </div>
         );
     });
