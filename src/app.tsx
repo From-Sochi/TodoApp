@@ -71,14 +71,14 @@ function App() {
     const filteredTasks = tasks.filter(task => {
         if (filter === 'active') return !task.checked;
         if (filter === 'completed') return task.checked;
-        return true; // для "all"
+        return true; 
     });
 
     return (
         <>
             <GlobalStyle />
             <Container>
-                <h1>ToDos</h1>
+                <h1>Список задач:</h1>
                 <InputField>
                     <TodoInput value={value} onChange={recording} type='text' placeholder='New todo...' />
                     <SubmitButton onClick={addTask}>Add</SubmitButton>
@@ -88,7 +88,7 @@ function App() {
                     <SubmitButton onClick={() => changeFilter('active')}>Show Active tasks</SubmitButton>
                     <SubmitButton onClick={() => changeFilter('completed')}>Show Completed tasks</SubmitButton>
                 </FilterField>
-                <ListHeading>{filteredTasks.length} Tasks remaining</ListHeading>
+                <ListHeading>{filteredTasks.length} Осталось задач</ListHeading>
                 <TaskList>
                     {filteredTasks.map((task) => (
                         <Description key={task.id}>
@@ -99,7 +99,7 @@ function App() {
                             />
                             {task.isEditing ? (
                                 <Description>
-                                    <input 
+                                    <TodoInput 
                                         type="text" 
                                         value={task.currentEditValue} 
                                         onChange={(e) => handleEditChange(task.id, e.target.value)} 
