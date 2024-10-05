@@ -2,7 +2,7 @@
   "name": "todoapp",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://From-Sochi.github.io/TodoApp/todoapp/",
+  "homepage": "https://From-Sochi.github.io/TodoApp/",
   "dependencies": {
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
